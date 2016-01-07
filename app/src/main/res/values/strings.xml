@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">LocationMarkerV2Drawer</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="drawer_item">
+        <item>Saved Markers List</item>
+        <item>Map</item>
+    </string-array>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_list_fragment">Hello list fragment</string>
+    <string name="hello_map_fragment">Hello map fragment</string>
+</resources>
