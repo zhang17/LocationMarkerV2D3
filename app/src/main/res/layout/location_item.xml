@@ -14,14 +14,14 @@
         <TextView
             android:id="@+id/text_location_name"
             android:text="text_location_name"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"/>
         <TextView
             android:id="@+id/text_categories"
             android:text="text_categories"
-            android:textSize="10dp"
+            android:textSize="10sp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
@@ -35,7 +35,7 @@
         <TextView
             android:id="@+id/text_last_visited_date"
             android:text="text_last_visited_date"
-            android:textSize="10dp"
+            android:textSize="10sp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
@@ -43,7 +43,7 @@
         <TextView
             android:id="@+id/text_saved_date"
             android:text="text_saved_date"
-            android:textSize="10dp"
+            android:textSize="10sp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>

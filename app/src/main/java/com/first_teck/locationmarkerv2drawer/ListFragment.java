@@ -32,7 +32,7 @@ public class ListFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         MenuItem test1 = new LocationItem("RedCarpet Inn",20.20, 20.20, "Living", "This is my sweet home", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test1);
-        MenuItem test2 = new LocationItem("Noodle Go Go",30.30, 30.30, "Eating", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
+        MenuItem test2 = new LocationItem("Noodle Go Go",30.30, 30.30, "eating", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test2);
         MenuItem test3 = new LocationItem("WalMart",40.40,40.40, "Shopping", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test3);
