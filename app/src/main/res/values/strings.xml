@@ -11,4 +11,10 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_list_fragment">Hello list fragment</string>
     <string name="hello_map_fragment">Hello map fragment</string>
+
+    <string name="dialog_map_message">dialog_message</string>
+    <string name="dialog_map_title">Add a new marker?</string>
+
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
 </resources>
