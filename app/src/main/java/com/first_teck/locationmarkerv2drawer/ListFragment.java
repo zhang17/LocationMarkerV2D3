@@ -21,7 +21,9 @@ public class ListFragment extends android.support.v4.app.Fragment {
     private ArrayList<MenuItem> locationItem = new ArrayList<com.first_teck.locationmarkerv2drawer.MenuItem>();
     private ListView locationList;
 
+    private MyDatabaseHelper myDatabaseHelperL;
 
+    
 
     public ListFragment() {
         // Required empty public constructor

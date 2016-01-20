@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +18,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Date;
@@ -36,7 +37,7 @@ import java.util.Date;
 
     private GoogleMap myGoogleMap;
 
-    private MyDatabaseHelper myDatabaseHelperF;
+    private MyDatabaseHelper myDatabaseHelperM;
 
 
     public MyMapFragment() {
@@ -54,6 +55,31 @@ import java.util.Date;
         initializeMap();
         loadSavedMarkers();
         setOnMapLongClickListener();
+        myGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
+
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15));
+                myDatabaseHelperM = ((MainActivity)getActivity()).getMyDatabaseHelper();
+                SQLiteDatabase db = myDatabaseHelperM.getWritableDatabase();
+                Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
+                if(cursor.moveToFirst()){
+                   do{
+                       if(cursor.getDouble(cursor.getColumnIndex("lat")) == marker.getPosition().latitude
+                               && cursor.getDouble(cursor.getColumnIndex("lng") )== marker.getPosition().longitude){
+                           String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                           String categories = cursor.getString((cursor.getColumnIndex("categories")));
+                           marker.setTitle("name: " + LocationName + " categories: " + categories);
+
+                       }
+                   }while(cursor.moveToNext());
+                }
+
+
+                return false;
+            }
+        });
 
         return view;
     }
@@ -71,8 +97,8 @@ import java.util.Date;
     }
 
     public void loadSavedMarkers(){
-        myDatabaseHelperF = ((MainActivity)getActivity()).getMyDatabaseHelper();
-        SQLiteDatabase db = myDatabaseHelperF.getWritableDatabase();
+        myDatabaseHelperM = ((MainActivity)getActivity()).getMyDatabaseHelper();
+        SQLiteDatabase db = myDatabaseHelperM.getWritableDatabase();
         Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
         if(cursor.moveToFirst()){
             do{
@@ -84,23 +110,26 @@ import java.util.Date;
                 String categories = cursor.getString((cursor.getColumnIndex("categories")));
                 String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                float color = 210;
+               // float color = 210;
 
                 switch (categories){
-                    case "Shopping":color = 210;//HUE_AZURE;
+                    case "Shopping": myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng )))
+                            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.shopping_small));
+
                         break;
-                    case "Eating":  color = 180;//HUE_CYAN
+                    case "Eating":   myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng )))
+                            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.eating_small));
                         break;
-                    case  "Living": color = 300;//HUE_MAGENTA
+                    case  "Living":  myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng )))
+                            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.living_small));
                         break;
-                    case "Entertaining": color = 270;//HUE_VIOLET
+                    case "Entertaining":  myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng )))
+                            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.entertaining_small));
                         break;
                     default:
                         break;
                 }
 
-                myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng ))).
-                        setIcon(BitmapDescriptorFactory.defaultMarker(color));
 
 
                 Log.d("MainActivity", "location name is " + LocationName);
@@ -134,7 +163,7 @@ import java.util.Date;
 
 
 
-                myDatabaseHelperF = ((MainActivity)getActivity()).getMyDatabaseHelper();
+                myDatabaseHelperM = ((MainActivity)getActivity()).getMyDatabaseHelper();
 
 
 
@@ -145,7 +174,7 @@ import java.util.Date;
                         final RadioButton radioButtonCategories = (RadioButton) customized_dialog_map_view.findViewById(checkedRadioButtonId);
 
 
-                        SQLiteDatabase db = myDatabaseHelperF.getWritableDatabase();
+                        SQLiteDatabase db = myDatabaseHelperM.getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put("locationName", editTextLocationName.getText().toString());
                         values.put("lat", latLng.latitude);
