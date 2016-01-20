@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -51,6 +50,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
         final View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         initializeMap();
+        loadSavedMarkers();
 
         myGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -98,27 +98,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
 
                         myGoogleMap.addMarker(new MarkerOptions().position(latLng));
 
-                        Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
-                        if(cursor.moveToFirst()){
-                            do{
-                                String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
-                                double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
-                                double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
-                                Date savedDate = new Date(cursor.getInt(cursor.getColumnIndex("savedDate")));
-                                Date lastVisitedDate = new Date(cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
-                                String categories = cursor.getString((cursor.getColumnIndex("categories")));
-                                String description = cursor.getString(cursor.getColumnIndex("description"));
-                                Log.d("MainActivity", "location name is " + LocationName);
-                                Log.d("MainActivity", "lat is " + lat);
-                                Log.d("MainActivity", "lng is" + lng);
-                                Log.d("MainActivity", "savedDate is " + savedDate);
-                                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
-                                Log.d("MainActivity", "category is " + categories );
-                                Log.d("MainActivity", "description is " + description);
 
-                            }while (cursor.moveToNext());
-                        }
-                        cursor.close();
 
                     }
                 });
@@ -155,6 +135,35 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                 myGoogleMap = googleMap;
             }
         });
+    }
+
+    public void loadSavedMarkers(){
+        myDatabaseHelperF = ((MainActivity)getActivity()).getMyDatabaseHelper();
+        SQLiteDatabase db = myDatabaseHelperF.getWritableDatabase();
+        Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
+        if(cursor.moveToFirst()){
+            do{
+                String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
+                double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
+                Date savedDate = new Date(cursor.getInt(cursor.getColumnIndex("savedDate")));
+                Date lastVisitedDate = new Date(cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
+                String categories = cursor.getString((cursor.getColumnIndex("categories")));
+                String description = cursor.getString(cursor.getColumnIndex("description"));
+
+                myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng )));
+
+                Log.d("MainActivity", "location name is " + LocationName);
+                Log.d("MainActivity", "lat is " + lat);
+                Log.d("MainActivity", "lng is" + lng);
+                Log.d("MainActivity", "savedDate is " + savedDate);
+                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
+                Log.d("MainActivity", "category is " + categories );
+                Log.d("MainActivity", "description is " + description);
+
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 
 
