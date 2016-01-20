@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -30,7 +32,7 @@ import java.util.Date;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MyMapFragment extends android.support.v4.app.Fragment {
+    public class MyMapFragment extends android.support.v4.app.Fragment {
 
     private GoogleMap myGoogleMap;
 
@@ -151,7 +153,24 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                 String categories = cursor.getString((cursor.getColumnIndex("categories")));
                 String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng )));
+                float color = 210;
+
+                switch (categories){
+                    case "Shopping":color = 210;//HUE_AZURE;
+                        break;
+                    case "Eating":  color = 180;//HUE_CYAN
+                        break;
+                    case  "Living": color = 300;//HUE_MAGENTA
+                        break;
+                    case "Entertaining": color = 270;//HUE_VIOLET
+                        break;
+                    default:
+                        break;
+                }
+
+                myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng ))).
+                        setIcon(BitmapDescriptorFactory.defaultMarker(color));
+
 
                 Log.d("MainActivity", "location name is " + LocationName);
                 Log.d("MainActivity", "lat is " + lat);
