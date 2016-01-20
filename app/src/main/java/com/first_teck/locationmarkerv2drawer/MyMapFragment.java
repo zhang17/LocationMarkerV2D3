@@ -53,7 +53,70 @@ import java.util.Date;
 
         initializeMap();
         loadSavedMarkers();
+        setOnMapLongClickListener();
 
+        return view;
+    }
+
+    public void initializeMap(){
+        //为什么这里需要用getChildFragmentManager，而不是getSupportFragmentManager()
+        SupportMapFragment supportMapFragment = (SupportMapFragment)this.getChildFragmentManager().findFragmentById(R.id.map);
+        myGoogleMap = supportMapFragment.getMap();
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                myGoogleMap = googleMap;
+            }
+        });
+    }
+
+    public void loadSavedMarkers(){
+        myDatabaseHelperF = ((MainActivity)getActivity()).getMyDatabaseHelper();
+        SQLiteDatabase db = myDatabaseHelperF.getWritableDatabase();
+        Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
+        if(cursor.moveToFirst()){
+            do{
+                String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
+                double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
+                Date savedDate = new Date(cursor.getInt(cursor.getColumnIndex("savedDate")));
+                Date lastVisitedDate = new Date(cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
+                String categories = cursor.getString((cursor.getColumnIndex("categories")));
+                String description = cursor.getString(cursor.getColumnIndex("description"));
+
+                float color = 210;
+
+                switch (categories){
+                    case "Shopping":color = 210;//HUE_AZURE;
+                        break;
+                    case "Eating":  color = 180;//HUE_CYAN
+                        break;
+                    case  "Living": color = 300;//HUE_MAGENTA
+                        break;
+                    case "Entertaining": color = 270;//HUE_VIOLET
+                        break;
+                    default:
+                        break;
+                }
+
+                myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng ))).
+                        setIcon(BitmapDescriptorFactory.defaultMarker(color));
+
+
+                Log.d("MainActivity", "location name is " + LocationName);
+                Log.d("MainActivity", "lat is " + lat);
+                Log.d("MainActivity", "lng is" + lng);
+                Log.d("MainActivity", "savedDate is " + savedDate);
+                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
+                Log.d("MainActivity", "category is " + categories );
+                Log.d("MainActivity", "description is " + description);
+
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
+    public void setOnMapLongClickListener(){
         myGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng latLng) {
@@ -119,72 +182,7 @@ import java.util.Date;
                 dialog.show();
             }
         });
-
-
-        myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(70.70, 70.70)));
-
-
-        return view;
     }
-
-    public void initializeMap(){
-        //为什么这里需要用getChildFragmentManager，而不是getSupportFragmentManager()
-        SupportMapFragment supportMapFragment = (SupportMapFragment)this.getChildFragmentManager().findFragmentById(R.id.map);
-        myGoogleMap = supportMapFragment.getMap();
-        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                myGoogleMap = googleMap;
-            }
-        });
-    }
-
-    public void loadSavedMarkers(){
-        myDatabaseHelperF = ((MainActivity)getActivity()).getMyDatabaseHelper();
-        SQLiteDatabase db = myDatabaseHelperF.getWritableDatabase();
-        Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
-        if(cursor.moveToFirst()){
-            do{
-                String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
-                double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
-                double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
-                Date savedDate = new Date(cursor.getInt(cursor.getColumnIndex("savedDate")));
-                Date lastVisitedDate = new Date(cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
-                String categories = cursor.getString((cursor.getColumnIndex("categories")));
-                String description = cursor.getString(cursor.getColumnIndex("description"));
-
-                float color = 210;
-
-                switch (categories){
-                    case "Shopping":color = 210;//HUE_AZURE;
-                        break;
-                    case "Eating":  color = 180;//HUE_CYAN
-                        break;
-                    case  "Living": color = 300;//HUE_MAGENTA
-                        break;
-                    case "Entertaining": color = 270;//HUE_VIOLET
-                        break;
-                    default:
-                        break;
-                }
-
-                myGoogleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng ))).
-                        setIcon(BitmapDescriptorFactory.defaultMarker(color));
-
-
-                Log.d("MainActivity", "location name is " + LocationName);
-                Log.d("MainActivity", "lat is " + lat);
-                Log.d("MainActivity", "lng is" + lng);
-                Log.d("MainActivity", "savedDate is " + savedDate);
-                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
-                Log.d("MainActivity", "category is " + categories );
-                Log.d("MainActivity", "description is " + description);
-
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
-    }
-
 
 
 
