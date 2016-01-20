@@ -3,9 +3,14 @@ package com.first_teck.locationmarkerv2drawer;
 
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +25,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Date;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +34,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MyMapFragment extends android.support.v4.app.Fragment {
 
     private GoogleMap myGoogleMap;
+
+    private MyDatabaseHelper myDatabaseHelperF;
 
 
     public MyMapFragment() {
@@ -45,7 +54,7 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
 
         myGoogleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
-            public void onMapLongClick(LatLng latLng) {
+            public void onMapLongClick(final LatLng latLng) {
                 //Dialog
                 //1.Instantiate an AlertDialog.Builder with its constructor
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -59,6 +68,11 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
 
 
 
+
+                myDatabaseHelperF = ((MainActivity)getActivity()).getMyDatabaseHelper();
+
+
+
                 // Add the buttons
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -66,10 +80,45 @@ public class MyMapFragment extends android.support.v4.app.Fragment {
                         final RadioButton radioButtonCategories = (RadioButton) customized_dialog_map_view.findViewById(checkedRadioButtonId);
 
 
+                        SQLiteDatabase db = myDatabaseHelperF.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put("locationName", editTextLocationName.getText().toString());
+                        values.put("lat", latLng.latitude);
+                        values.put("lng", latLng.longitude);
+                        values.put("savedDate", System.currentTimeMillis());
+                        values.put("lastVisitedDate", System.currentTimeMillis());
+                        values.put("categories", radioButtonCategories.getText().toString());
+                        values.put("description", editTextDescriptions.getText().toString());
+                        db.insert("locationTable", null,values);
+
                         // User clicked OK button
                         Toast.makeText(getActivity(), " Location name: " + editTextLocationName.getText().toString()
-                                + " Categories: "+ radioButtonCategories.getText()
-                                + " Descriptions: "+ editTextDescriptions.getText(), Toast.LENGTH_SHORT).show();
+                                + " Categories: " + radioButtonCategories.getText().toString()
+                                + " Descriptions: " + editTextDescriptions.getText().toString(), Toast.LENGTH_LONG).show();
+
+                        myGoogleMap.addMarker(new MarkerOptions().position(latLng));
+
+                        Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
+                        if(cursor.moveToFirst()){
+                            do{
+                                String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                                double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
+                                double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
+                                Date savedDate = new Date(cursor.getInt(cursor.getColumnIndex("savedDate")));
+                                Date lastVisitedDate = new Date(cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
+                                String categories = cursor.getString((cursor.getColumnIndex("categories")));
+                                String description = cursor.getString(cursor.getColumnIndex("description"));
+                                Log.d("MainActivity", "location name is " + LocationName);
+                                Log.d("MainActivity", "lat is " + lat);
+                                Log.d("MainActivity", "lng is" + lng);
+                                Log.d("MainActivity", "savedDate is " + savedDate);
+                                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
+                                Log.d("MainActivity", "category is " + categories );
+                                Log.d("MainActivity", "description is " + description);
+
+                            }while (cursor.moveToNext());
+                        }
+                        cursor.close();
 
                     }
                 });

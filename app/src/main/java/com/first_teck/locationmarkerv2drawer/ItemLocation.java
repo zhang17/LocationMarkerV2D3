@@ -6,10 +6,10 @@ import java.util.Date;
 /**
  * Created by zyqzh_000 on 2015/11/23.
  */
-public class LocationItem extends MenuItem {
+public class ItemLocation extends MenuItem {
     private MyLocation myLocation = new MyLocation();
 
-    public LocationItem(String name, double lat, double lng, String categories,String description, Date lastVisitedDate, Date savedDate){
+    public ItemLocation(String name, double lat, double lng, String categories, String description, Date lastVisitedDate, Date savedDate){
         this.myLocation.setLocationName(name);
         this.myLocation.setLat(lat);
         this.myLocation.setLng(lng);

@@ -93,16 +93,16 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem>{
             viewHolder.myDivider = view.findViewById(R.id.divider2);//viewHolder.myDivider = (View)view.findViewById(R.id.divider2);
             viewHolder.myDivider.setVisibility(View.VISIBLE);
         }
-        else if (menuItem instanceof LocationItem){
+        else if (menuItem instanceof ItemLocation){
             viewHolder.myText = (TextView)view.findViewById(R.id.text_location_name);
-            viewHolder.myText.setText(((LocationItem)menuItem).getLocationName());
+            viewHolder.myText.setText(((ItemLocation)menuItem).getLocationName());
             viewHolder.myText1 = (TextView)view.findViewById(R.id.text_last_visited_date);
-            viewHolder.myText1.setText("Last Visited Time:" + "\n" + (((LocationItem) menuItem).getLastVisitedDate()).toString());//这一步将millisecond的时间转化成date
+            viewHolder.myText1.setText("Last Visited Time:" + "\n" + (((ItemLocation) menuItem).getLastVisitedDate()).toString());//这一步将millisecond的时间转化成date
             viewHolder.myText2 = (TextView)view.findViewById(R.id.text_saved_date);
-            viewHolder.myText2.setText("Saved Time:"+"\n"+ ((LocationItem) menuItem).getSavedDate().toString());//这一步将millisecond的时间转化成date
+            viewHolder.myText2.setText("Saved Time:"+"\n"+ ((ItemLocation) menuItem).getSavedDate().toString());//这一步将millisecond的时间转化成date
             viewHolder.myText3 = (TextView)view.findViewById(R.id.text_categories);
-            viewHolder.myText3.setText("Categories:"+ ((LocationItem) menuItem).getCategories());
-            switch (((LocationItem) menuItem).getCategories()){
+            viewHolder.myText3.setText("Categories:"+ ((ItemLocation) menuItem).getCategories());
+            switch (((ItemLocation) menuItem).getCategories()){
                 case "Entertaining": viewHolder.myText.setBackgroundColor(Color.parseColor("#e5e5ff"));//blue
                                     viewHolder.myText1.setBackgroundColor(Color.parseColor("#e5e5ff"));
                                     viewHolder.myText2.setBackgroundColor(Color.parseColor("#e5e5ff"));

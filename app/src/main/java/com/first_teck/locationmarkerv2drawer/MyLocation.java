@@ -14,6 +14,7 @@ public class MyLocation {
     private String categories;
     private String description;
 
+
     public String getLocationName() {
         return locationName;
     }

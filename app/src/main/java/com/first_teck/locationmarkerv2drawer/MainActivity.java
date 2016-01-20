@@ -19,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
+
+
+    //////
+    private MyDatabaseHelper myDatabaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         drawerSetUp();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+
+
+        ///////////////////////////////////
+        myDatabaseHelper = new MyDatabaseHelper(this, "Location.db", null, 1);
     }
 
     @Override
@@ -105,6 +114,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    ////////////////////databaseHelper
+    public MyDatabaseHelper getMyDatabaseHelper() {
+        return myDatabaseHelper;
+    }
+
+    public void setMyDatabaseHelper(MyDatabaseHelper myDatabaseHelper) {
+        this.myDatabaseHelper = myDatabaseHelper;
     }
 
 }

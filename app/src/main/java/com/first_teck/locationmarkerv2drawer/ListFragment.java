@@ -30,13 +30,13 @@ public class ListFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        MenuItem test1 = new LocationItem("RedCarpet Inn",20.20, 20.20, "Living", "This is my sweet home", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
+        MenuItem test1 = new ItemLocation("RedCarpet Inn",20.20, 20.20, "Living", "This is my sweet home", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test1);
-        MenuItem test2 = new LocationItem("Noodle Go Go",30.30, 30.30, "eating", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
+        MenuItem test2 = new ItemLocation("Noodle Go Go",30.30, 30.30, "eating", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test2);
-        MenuItem test3 = new LocationItem("WalMart",40.40,40.40, "Shopping", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
+        MenuItem test3 = new ItemLocation("WalMart",40.40,40.40, "Shopping", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test3);
-        MenuItem test4 = new LocationItem("AMC theatres",50.50, 50.50, "Entertaining", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
+        MenuItem test4 = new ItemLocation("AMC theatres",50.50, 50.50, "Entertaining", "This is bala bala", new Date(115, 11, 23, 16, 45, 12), new Date(115, 10, 20, 19, 34, 10));
         locationItem.add(test4);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list, container, false);
