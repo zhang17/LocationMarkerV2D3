@@ -153,6 +153,7 @@ import java.util.Date;
                 //1.Instantiate an AlertDialog.Builder with its constructor
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+
                 // Get the layout inflater
                 final View customized_dialog_map_view = getActivity().getLayoutInflater().inflate(R.layout.dialog_map, null);
 

@@ -17,4 +17,10 @@
 
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>
+    <string name="dialog_list_title">Choose one action</string>
+    <string-array name="dialog_list_item">
+        <item>See the location on Map</item>
+        <item>Visited this place</item>
+        <item>delete this marker</item>
+    </string-array>
 </resources>
