@@ -97,9 +97,9 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem>{
             viewHolder.myText = (TextView)view.findViewById(R.id.text_location_name);
             viewHolder.myText.setText(((ItemLocation)menuItem).getLocationName());
             viewHolder.myText1 = (TextView)view.findViewById(R.id.text_last_visited_date);
-            viewHolder.myText1.setText("Last Visited Time:" + "\n" + (((ItemLocation) menuItem).getLastVisitedDate()).toString());//这一步将millisecond的时间转化成date
+            viewHolder.myText1.setText("Save Time:" + "\n" + (((ItemLocation) menuItem).getLastVisitedDate()).toString());//这一步将millisecond的时间转化成date,交换
             viewHolder.myText2 = (TextView)view.findViewById(R.id.text_saved_date);
-            viewHolder.myText2.setText("Saved Time:"+"\n"+ ((ItemLocation) menuItem).getSavedDate().toString());//这一步将millisecond的时间转化成date
+            viewHolder.myText2.setText("Last Visited Time:"+"\n"+ ((ItemLocation) menuItem).getSavedDate().toString());//这一步将millisecond的时间转化成date，交换
             viewHolder.myText3 = (TextView)view.findViewById(R.id.text_categories);
             viewHolder.myText3.setText("Categories:"+ ((ItemLocation) menuItem).getCategories());
             switch (((ItemLocation) menuItem).getCategories()){

@@ -18,8 +18,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -35,9 +38,10 @@ import java.util.Date;
  */
     public class MyMapFragment extends android.support.v4.app.Fragment {
 
-    private GoogleMap myGoogleMap;
+    private  GoogleMap myGoogleMap;
 
     private MyDatabaseHelper myDatabaseHelperM;
+;
 
 
     public MyMapFragment() {
@@ -86,7 +90,7 @@ import java.util.Date;
 
     public void initializeMap(){
         //为什么这里需要用getChildFragmentManager，而不是getSupportFragmentManager()
-        SupportMapFragment supportMapFragment = (SupportMapFragment)this.getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment supportMapFragment = (SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.map);
         myGoogleMap = supportMapFragment.getMap();
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -94,6 +98,7 @@ import java.util.Date;
                 myGoogleMap = googleMap;
             }
         });
+
     }
 
     public void loadSavedMarkers(){
@@ -132,13 +137,13 @@ import java.util.Date;
 
 
 
-                Log.d("MainActivity", "location name is " + LocationName);
-                Log.d("MainActivity", "lat is " + lat);
-                Log.d("MainActivity", "lng is" + lng);
-                Log.d("MainActivity", "savedDate is " + savedDate);
-                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
-                Log.d("MainActivity", "category is " + categories );
-                Log.d("MainActivity", "description is " + description);
+//                Log.d("MainActivity", "location name is " + LocationName);
+//                Log.d("MainActivity", "lat is " + lat);
+//                Log.d("MainActivity", "lng is" + lng);
+//                Log.d("MainActivity", "savedDate is " + savedDate);
+//                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
+//                Log.d("MainActivity", "category is " + categories );
+//                Log.d("MainActivity", "description is " + description);
 
             }while (cursor.moveToNext());
         }
@@ -157,15 +162,12 @@ import java.util.Date;
                 // Get the layout inflater
                 final View customized_dialog_map_view = getActivity().getLayoutInflater().inflate(R.layout.dialog_map, null);
 
-                final EditText editTextLocationName = (EditText)customized_dialog_map_view.findViewById(R.id.edit_text_location_name);
+                final EditText editTextLocationName = (EditText) customized_dialog_map_view.findViewById(R.id.edit_text_location_name);
                 final RadioGroup radioGroupCategories = (RadioGroup) customized_dialog_map_view.findViewById(R.id.radio_group_categories);
                 final EditText editTextDescriptions = (EditText) customized_dialog_map_view.findViewById(R.id.edit_text_descriptions);
 
 
-
-
-                myDatabaseHelperM = ((MainActivity)getActivity()).getMyDatabaseHelper();
-
+                myDatabaseHelperM = ((MainActivity) getActivity()).getMyDatabaseHelper();
 
 
                 // Add the buttons
@@ -184,15 +186,15 @@ import java.util.Date;
                         values.put("lastVisitedDate", System.currentTimeMillis());
                         values.put("categories", radioButtonCategories.getText().toString());
                         values.put("description", editTextDescriptions.getText().toString());
-                        db.insert("locationTable", null,values);
+                        db.insert("locationTable", null, values);
 
                         // User clicked OK button
                         Toast.makeText(getActivity(), " Location name: " + editTextLocationName.getText().toString()
                                 + " Categories: " + radioButtonCategories.getText().toString()
-                                + " Descriptions: " + editTextDescriptions.getText().toString(), Toast.LENGTH_LONG).show();
+                                + " Descriptions: " + editTextDescriptions.getText().toString()
+                                + "savedDate" + System.currentTimeMillis() , Toast.LENGTH_LONG).show();
 
                         myGoogleMap.addMarker(new MarkerOptions().position(latLng));
-
 
 
                     }
@@ -214,6 +216,13 @@ import java.util.Date;
         });
     }
 
+    public void zoomTo(LatLng latLng){
+
+        Log.d("MyMapFragment", "latitude is: " + latLng.latitude + "longitude" + latLng.longitude);
+        System.out.println("latitude is: " + latLng.latitude + "longitude" + latLng.longitude);
+        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+    }
 
 
 }
