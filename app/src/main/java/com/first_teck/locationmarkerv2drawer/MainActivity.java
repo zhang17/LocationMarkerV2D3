@@ -37,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
         ///////////////////////////////////
         myDatabaseHelper = new MyDatabaseHelper(this, "Location.db", null, 1);
+        android.support.v4.app.Fragment newFragment = null;
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        newFragment = new ListFragment();
+        fragmentTransaction.replace(R.id.content_frame, newFragment);
+        //transaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
     }
 
     @Override
