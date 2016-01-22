@@ -67,6 +67,8 @@ public class ListFragment extends android.support.v4.app.Fragment {
                 final double lat = ((ItemLocation) locationItem.get(position)).getLat();
                 final double lng = ((ItemLocation) locationItem.get(position)).getLng();
 
+                final SQLiteDatabase db = myDatabaseHelperL.getWritableDatabase();
+
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.dialog_list_title)
@@ -90,7 +92,6 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         //    ((MyMapFragment)newFragment.getChildFragmentManager().findFragmentById(R.id.map)).zoomTo(new LatLng(lat, lng));
                                         break;
                                     case 1:
-                                        SQLiteDatabase db = myDatabaseHelperL.getWritableDatabase();
                                         ContentValues values = new ContentValues();
                                         values.put("lastVisitedDate", System.currentTimeMillis());
                                         db.update("locationTable", values, " lat = ?", new String[]{String.valueOf(lat)});
@@ -98,6 +99,7 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         Toast.makeText(getActivity(), "second button", Toast.LENGTH_LONG).show();
                                         break;
                                     case 2:
+                                        db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});
                                         Toast.makeText(getActivity(), "third button", Toast.LENGTH_LONG).show();
                                         break;
                                     default:
