@@ -1,12 +1,13 @@
 package com.first_teck.locationmarkerv2drawer;
 
-
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,25 +23,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ListFragment extends android.support.v4.app.Fragment {
 
+public class ListFragmentEntertaining extends android.support.v4.app.Fragment {
     private ArrayList<MenuItem> locationItem = new ArrayList<com.first_teck.locationmarkerv2drawer.MenuItem>();
     private ListView locationList;
 
-    private MyDatabaseHelper myDatabaseHelperL;
+    private MyDatabaseHelper myDatabaseHelperLS;
 
-
-
-
-
-
-    public ListFragment() {
+    public ListFragmentEntertaining() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +55,7 @@ public class ListFragment extends android.support.v4.app.Fragment {
                 final double lat = ((ItemLocation) locationItem.get(position)).getLat();
                 final double lng = ((ItemLocation) locationItem.get(position)).getLng();
 
-                final SQLiteDatabase db = myDatabaseHelperL.getWritableDatabase();
+                final SQLiteDatabase db = myDatabaseHelperLS.getWritableDatabase();
 
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -73,9 +65,9 @@ public class ListFragment extends android.support.v4.app.Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        android.support.v4.app.Fragment newFragment = new MyMapFragment();
-                                        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        Fragment newFragment = new MyMapFragment();
+                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace(R.id.content_frame, newFragment);
                                         fragmentTransaction.commit();
 
@@ -112,21 +104,25 @@ public class ListFragment extends android.support.v4.app.Fragment {
     }
 
     public void initializeLocationItem(){
-        myDatabaseHelperL = ((MainActivity)getActivity()).getMyDatabaseHelper();
-        SQLiteDatabase db = myDatabaseHelperL.getWritableDatabase();
+        myDatabaseHelperLS = ((MainActivity)getActivity()).getMyDatabaseHelper();
+        SQLiteDatabase db = myDatabaseHelperLS.getWritableDatabase();
         Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
         if(cursor.moveToFirst()) {
             do {
-                String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
-                double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
-                double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
-                Date savedDate = new Date( cursor.getInt(cursor.getColumnIndex("savedDate")));
-                Date lastVisitedDate = new Date( cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
                 String categories = cursor.getString((cursor.getColumnIndex("categories")));
-                String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description, savedDate, lastVisitedDate);
-                locationItem.add(menuItem);
+                if(categories.equals("Entertaining")) {
+                    String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                    double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
+                    double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
+                    Date savedDate = new Date(cursor.getInt(cursor.getColumnIndex("savedDate")));
+                    Date lastVisitedDate = new Date(cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
+
+                    String description = cursor.getString(cursor.getColumnIndex("description"));
+
+                    MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description, savedDate, lastVisitedDate);
+                    locationItem.add(menuItem);
+                }
 
 
             }while (cursor.moveToNext());

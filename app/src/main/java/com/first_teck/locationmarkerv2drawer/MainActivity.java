@@ -5,11 +5,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -106,6 +108,37 @@ public class MainActivity extends AppCompatActivity {
                             //transaction.addToBackStack(null);
                         fragmentTransaction.commit();
                             break;
+
+                    case 4:
+                        newFragment = new ListFragmentShopping();
+                        fragmentTransaction.replace(R.id.content_frame, newFragment);
+                        //transaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        break;
+                    case 5:
+                        newFragment = new ListFragmentEating();
+                        fragmentTransaction.replace(R.id.content_frame, newFragment);
+                        //transaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        Log.d("MainActivity", "case 5");
+                        break;
+                    case 6:
+                        newFragment = new ListFragmentLiving();
+                        fragmentTransaction.replace(R.id.content_frame, newFragment);
+                        //transaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        Log.d("MainActivity", "case 6");
+                        break;
+                    case 7:
+                        newFragment = new ListFragmentEntertaining();
+                        fragmentTransaction.replace(R.id.content_frame, newFragment);
+                        //transaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        Log.d("MainActivity", "case 7");
+                        break;
+                    default:
+                        break;
+
                     }
 
                 mDrawerList.setItemChecked(position, true);
