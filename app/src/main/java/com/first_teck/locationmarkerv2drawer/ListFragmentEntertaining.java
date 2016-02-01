@@ -83,12 +83,9 @@ public class ListFragmentEntertaining extends android.support.v4.app.Fragment {
                                         ContentValues values = new ContentValues();
                                         values.put("lastVisitedDate", System.currentTimeMillis());
                                         db.update("locationTable", values, " lat = ?", new String[]{String.valueOf(lat)});
-
-                                        Toast.makeText(getActivity(), "second button", Toast.LENGTH_LONG).show();
                                         break;
                                     case 2:
                                         db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});
-                                        Toast.makeText(getActivity(), "third button", Toast.LENGTH_LONG).show();
                                         break;
                                     default:
                                         break;
@@ -120,7 +117,7 @@ public class ListFragmentEntertaining extends android.support.v4.app.Fragment {
 
                     String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                    MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description, savedDate, lastVisitedDate);
+                    MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description,lastVisitedDate, savedDate);
                     locationItem.add(menuItem);
                 }
 

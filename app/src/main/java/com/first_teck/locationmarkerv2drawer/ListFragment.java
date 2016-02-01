@@ -92,12 +92,9 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         ContentValues values = new ContentValues();
                                         values.put("lastVisitedDate", System.currentTimeMillis());
                                         db.update("locationTable", values, " lat = ?", new String[]{String.valueOf(lat)});
-
-                                        Toast.makeText(getActivity(), "second button", Toast.LENGTH_LONG).show();
                                         break;
                                     case 2:
-                                        db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});
-                                        Toast.makeText(getActivity(), "third button", Toast.LENGTH_LONG).show();
+                                        db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});//其实有漏洞，应该同时满足lat和lng
                                         break;
                                     default:
                                         break;
@@ -122,13 +119,11 @@ public class ListFragment extends android.support.v4.app.Fragment {
                 double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
                 double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
                 Date savedDate = new Date(cursor.getLong(cursor.getColumnIndex("savedDate")));
-                Log.d("MyMapFragment", "savedDate Integer: " + cursor.getLong(cursor.getColumnIndex("savedDate")));
-                Log.d("MyMapFragment", "savedDate: " + savedDate);
                 Date lastVisitedDate = new Date( cursor.getLong(cursor.getColumnIndex("lastVisitedDate")));
                 String categories = cursor.getString((cursor.getColumnIndex("categories")));
                 String description = cursor.getString(cursor.getColumnIndex("description"));
 
-                MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description, savedDate, lastVisitedDate);
+                MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description,lastVisitedDate, savedDate);
                 locationItem.add(menuItem);
 
 

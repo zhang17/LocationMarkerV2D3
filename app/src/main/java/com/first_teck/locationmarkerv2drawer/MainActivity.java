@@ -128,21 +128,18 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
                         //transaction.addToBackStack(null);
                         fragmentTransaction.commit();
-                        Log.d("MainActivity", "case 5");
                         break;
                     case 6:
                         newFragment = new ListFragmentLiving();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
                         //transaction.addToBackStack(null);
                         fragmentTransaction.commit();
-                        Log.d("MainActivity", "case 6");
                         break;
                     case 7:
                         newFragment = new ListFragmentEntertaining();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
                         //transaction.addToBackStack(null);
                         fragmentTransaction.commit();
-                        Log.d("MainActivity", "case 7");
                         break;
                     default:
                         break;
