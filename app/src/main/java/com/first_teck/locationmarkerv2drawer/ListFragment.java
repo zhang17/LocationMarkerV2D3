@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,8 +121,10 @@ public class ListFragment extends android.support.v4.app.Fragment {
                 String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
                 double lat = cursor.getDouble(cursor.getColumnIndex("lat"));
                 double lng = cursor.getDouble(cursor.getColumnIndex("lng"));
-                Date savedDate = new Date( cursor.getInt(cursor.getColumnIndex("savedDate")));
-                Date lastVisitedDate = new Date( cursor.getInt(cursor.getColumnIndex("lastVisitedDate")));
+                Date savedDate = new Date(cursor.getLong(cursor.getColumnIndex("savedDate")));
+                Log.d("MyMapFragment", "savedDate Integer: " + cursor.getLong(cursor.getColumnIndex("savedDate")));
+                Log.d("MyMapFragment", "savedDate: " + savedDate);
+                Date lastVisitedDate = new Date( cursor.getLong(cursor.getColumnIndex("lastVisitedDate")));
                 String categories = cursor.getString((cursor.getColumnIndex("categories")));
                 String description = cursor.getString(cursor.getColumnIndex("description"));
 
