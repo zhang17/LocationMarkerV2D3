@@ -74,8 +74,6 @@ public class ListFragmentShopping extends android.support.v4.app.Fragment {
                                         //Toast.makeText(getActivity(), "lat: " + lat + "lng: " + lng, Toast.LENGTH_LONG).show();
 
                                         //((MyMapFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).zoomTo(new LatLng(lat, lng));
-
-                                        ((MyMapFragment)newFragment).zoomTo(new LatLng(lat,lng));//???????????????
                                         //((MyMapFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).zoomTo();
                                         //    ((MyMapFragment)newFragment.getChildFragmentManager().findFragmentById(R.id.map)).zoomTo(new LatLng(lat, lng));
                                         break;

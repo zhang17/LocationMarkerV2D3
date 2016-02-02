@@ -49,16 +49,14 @@ public class ListFragment extends android.support.v4.app.Fragment {
         initializeLocationItem();
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        MenuItemAdapter locationItemAdapter = new MenuItemAdapter(getActivity(), R.layout.location_item, locationItem);
+        final MenuItemAdapter locationItemAdapter = new MenuItemAdapter(getActivity(), R.layout.location_item, locationItem);
         locationList = (ListView)view.findViewById(R.id.location_list);
         locationList.setAdapter(locationItemAdapter);
 
 
-
-
         locationList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 //应该是从这里获取Item的信息
                 ///location这个item里
                 final double lat = ((ItemLocation) locationItem.get(position)).getLat();
@@ -75,16 +73,28 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                 switch (which) {
                                     case 0:
                                         android.support.v4.app.Fragment newFragment = new MyMapFragment();
+
+
+
+                                        Bundle args = new Bundle();
+                                        args.putDouble("lat", lat);
+                                        args.putDouble("lng",lng);
+                                        newFragment.setArguments(args);
+
+
                                         android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace(R.id.content_frame, newFragment);
                                         fragmentTransaction.commit();
 
+
+
+
                                         //Toast.makeText(getActivity(), "lat: " + lat + "lng: " + lng, Toast.LENGTH_LONG).show();
 
                                         //((MyMapFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).zoomTo(new LatLng(lat, lng));
 
-                                        ((MyMapFragment)newFragment).zoomTo(new LatLng(lat,lng));//???????????????
+                                        //((MyMapFragment) newFragment).zoomTo(new LatLng(lat, lng));//???????????????
                                         //((MyMapFragment)getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).zoomTo();
                                         //    ((MyMapFragment)newFragment.getChildFragmentManager().findFragmentById(R.id.map)).zoomTo(new LatLng(lat, lng));
                                         break;
@@ -95,6 +105,12 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         break;
                                     case 2:
                                         db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});//其实有漏洞，应该同时满足lat和lng
+                                        //TODO: locationItem.remove then update
+                                        //有问题
+
+
+                                        locationItemAdapter.remove(locationItem.get(position));
+                                        locationItemAdapter.notifyDataSetChanged();
                                         break;
                                     default:
                                         break;

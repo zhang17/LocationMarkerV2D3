@@ -13,16 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -58,28 +58,63 @@ import java.util.Date;
 
         initializeMap();
         loadSavedMarkers();
+
+        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getArguments().getDouble("lat"),getArguments().getDouble("lng")), 15));
+
         setOnMapLongClickListener();
-        myGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener(){
+        myGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15));
-                myDatabaseHelperM = ((MainActivity)getActivity()).getMyDatabaseHelper();
-                SQLiteDatabase db = myDatabaseHelperM.getWritableDatabase();
-                Cursor cursor = db.query("locationTable", null,null,null,null,null, null);
-                if(cursor.moveToFirst()){
-                   do{
-                       if(cursor.getDouble(cursor.getColumnIndex("lat")) == marker.getPosition().latitude
-                               && cursor.getDouble(cursor.getColumnIndex("lng") )== marker.getPosition().longitude){
-                           String LocationName = cursor.getString(cursor.getColumnIndex("locationName"));
-                           String categories = cursor.getString((cursor.getColumnIndex("categories")));
-                           marker.setTitle("name: " + LocationName + " categories: " + categories);
+                String locationName = "";
+                String description = "";
 
-                       }
-                   }while(cursor.moveToNext());
+                myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15));
+                myDatabaseHelperM = ((MainActivity) getActivity()).getMyDatabaseHelper();
+                SQLiteDatabase db = myDatabaseHelperM.getWritableDatabase();
+                Cursor cursor = db.query("locationTable", null, null, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        if (cursor.getDouble(cursor.getColumnIndex("lat")) == marker.getPosition().latitude
+                                && cursor.getDouble(cursor.getColumnIndex("lng")) == marker.getPosition().longitude) {
+                             locationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                             description = cursor.getString((cursor.getColumnIndex("description")));
+
+                            break;
+                        }
+
+                    } while (cursor.moveToNext());
+
                 }
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                LayoutInflater inflater1 = getActivity().getLayoutInflater();
+
+                final View view1 = inflater1.inflate(R.layout.dialog_map_marker, null);
+
+
+                final TextView textView1 = (TextView) view1.findViewById(R.id.text1);
+                final TextView textView2 = (TextView) view1.findViewById(R.id.text2);
+                textView1.setText("Name: " + locationName);//逻辑上是肯定会initialized
+                textView2.setText("Description: " + description);
+
+                WebView webView = (WebView) view1.findViewById(R.id.web_dialog_map);
+                webView.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String
+                            url) {
+                        view.loadUrl(url); // 根据传入的参数再去加载新的网页
+                        return true; // 表示当前WebView可以处理打开新网页的请求，不用借助系统浏览器
+                    }
+                });
+                webView.loadUrl("http://www.baidu.com");
+
+                builder.setTitle("Location Info")
+                        .setView(view1);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
                 return false;
             }
@@ -137,13 +172,7 @@ import java.util.Date;
 
 
 
-//                Log.d("MainActivity", "location name is " + LocationName);
-//                Log.d("MainActivity", "lat is " + lat);
-//                Log.d("MainActivity", "lng is" + lng);
-//                Log.d("MainActivity", "savedDate is " + savedDate);
-//                Log.d("MainActivity", "lastVisitedDate is " + lastVisitedDate);
-//                Log.d("MainActivity", "category is " + categories );
-//                Log.d("MainActivity", "description is " + description);
+
 
             }while (cursor.moveToNext());
         }
@@ -216,13 +245,7 @@ import java.util.Date;
         });
     }
 
-    public void zoomTo(LatLng latLng){
 
-        Log.d("MyMapFragment", "latitude is: " + latLng.latitude + "longitude" + latLng.longitude);
-        System.out.println("latitude is: " + latLng.latitude + "longitude" + latLng.longitude);
-        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
-    }
 
 
 }
