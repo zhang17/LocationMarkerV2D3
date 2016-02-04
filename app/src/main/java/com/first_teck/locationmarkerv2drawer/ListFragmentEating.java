@@ -40,7 +40,7 @@ public class ListFragmentEating extends android.support.v4.app.Fragment {
         initializeLocationItem();
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        MenuItemAdapter locationItemAdapter = new MenuItemAdapter(getActivity(), R.layout.location_item, locationItem);
+        final MenuItemAdapter locationItemAdapter = new MenuItemAdapter(getActivity(), R.layout.location_item, locationItem);
         locationList = (ListView)view.findViewById(R.id.location_list);
         locationList.setAdapter(locationItemAdapter);
 
@@ -49,11 +49,12 @@ public class ListFragmentEating extends android.support.v4.app.Fragment {
 
         locationList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 //应该是从这里获取Item的信息
                 ///location这个item里
                 final double lat = ((ItemLocation) locationItem.get(position)).getLat();
                 final double lng = ((ItemLocation) locationItem.get(position)).getLng();
+                final String locationName =  ((ItemLocation) locationItem.get(position)).getLocationName();
 
                 final SQLiteDatabase db = myDatabaseHelperLS.getWritableDatabase();
 
@@ -66,6 +67,13 @@ public class ListFragmentEating extends android.support.v4.app.Fragment {
                                 switch (which) {
                                     case 0:
                                         Fragment newFragment = new MyMapFragment();
+
+
+                                        Bundle args = new Bundle();
+                                        args.putDouble("lat", lat);
+                                        args.putDouble("lng",lng);
+                                        newFragment.setArguments(args);
+                                        
                                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace(R.id.content_frame, newFragment);
@@ -85,7 +93,14 @@ public class ListFragmentEating extends android.support.v4.app.Fragment {
                                         db.update("locationTable", values, " lat = ?", new String[]{String.valueOf(lat)});
                                         break;
                                     case 2:
-                                        db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});
+
+                                        db.delete("locationTable", "locationName = ?",new String[]{locationName});
+
+                                        //TODO: 根据名字也有漏洞，可以在存marker时check
+
+                                        locationItemAdapter.remove(locationItem.get(position));
+                                        locationItemAdapter.notifyDataSetChanged();
+
                                         break;
                                     default:
                                         break;

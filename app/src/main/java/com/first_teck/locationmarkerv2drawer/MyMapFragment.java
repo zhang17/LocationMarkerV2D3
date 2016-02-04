@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +58,10 @@ import java.util.Date;
         initializeMap();
         loadSavedMarkers();
 
-        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getArguments().getDouble("lat"),getArguments().getDouble("lng")), 15));
+        if(getArguments() != null){
+            myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getArguments().getDouble("lat"),getArguments().getDouble("lng")), 15));
+        }
+
 
         setOnMapLongClickListener();
         myGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {

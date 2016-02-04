@@ -61,6 +61,7 @@ public class ListFragment extends android.support.v4.app.Fragment {
                 ///location这个item里
                 final double lat = ((ItemLocation) locationItem.get(position)).getLat();
                 final double lng = ((ItemLocation) locationItem.get(position)).getLng();
+                final String locationName =  ((ItemLocation) locationItem.get(position)).getLocationName();
 
                 final SQLiteDatabase db = myDatabaseHelperL.getWritableDatabase();
 
@@ -75,10 +76,9 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         android.support.v4.app.Fragment newFragment = new MyMapFragment();
 
 
-
                                         Bundle args = new Bundle();
                                         args.putDouble("lat", lat);
-                                        args.putDouble("lng",lng);
+                                        args.putDouble("lng", lng);
                                         newFragment.setArguments(args);
 
 
@@ -86,8 +86,6 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace(R.id.content_frame, newFragment);
                                         fragmentTransaction.commit();
-
-
 
 
                                         //Toast.makeText(getActivity(), "lat: " + lat + "lng: " + lng, Toast.LENGTH_LONG).show();
@@ -104,13 +102,14 @@ public class ListFragment extends android.support.v4.app.Fragment {
                                         db.update("locationTable", values, " lat = ?", new String[]{String.valueOf(lat)});
                                         break;
                                     case 2:
-                                        db.delete("locationTable", "lat = ?", new String[]{String.valueOf(lat)});//其实有漏洞，应该同时满足lat和lng
-                                        //TODO: locationItem.remove then update
-                                        //有问题
+                                        db.delete("locationTable", "locationName = ?",new String[]{locationName});
 
+                                        //TODO: 根据名字也有漏洞，可以在存marker时check
 
                                         locationItemAdapter.remove(locationItem.get(position));
                                         locationItemAdapter.notifyDataSetChanged();
+
+
                                         break;
                                     default:
                                         break;
@@ -138,6 +137,12 @@ public class ListFragment extends android.support.v4.app.Fragment {
                 Date lastVisitedDate = new Date( cursor.getLong(cursor.getColumnIndex("lastVisitedDate")));
                 String categories = cursor.getString((cursor.getColumnIndex("categories")));
                 String description = cursor.getString(cursor.getColumnIndex("description"));
+
+                Log.d("Load Data from DB","id: " + String.valueOf(cursor.getInt(cursor.getColumnIndex("id"))));
+                Log.d("Load Data from DB","Name: " + String.valueOf(lng));
+                Log.d("Load Data from DB","lat: " + String.valueOf(lat));
+                Log.d("Load Data from DB","lng: " + LocationName);
+
 
                 MenuItem menuItem = new ItemLocation(LocationName, lat, lng, categories, description,lastVisitedDate, savedDate);
                 locationItem.add(menuItem);
