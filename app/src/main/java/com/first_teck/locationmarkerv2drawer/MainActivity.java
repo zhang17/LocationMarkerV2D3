@@ -1,6 +1,11 @@
 package com.first_teck.locationmarkerv2drawer;
 
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +18,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     //////
     private MyDatabaseHelper myDatabaseHelper;
+
+
+
+    private LocationManager locationManager;
+    private String provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,5 +177,7 @@ public class MainActivity extends AppCompatActivity {
     public void setMyDatabaseHelper(MyDatabaseHelper myDatabaseHelper) {
         this.myDatabaseHelper = myDatabaseHelper;
     }
+
+
 
 }

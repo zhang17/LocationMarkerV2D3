@@ -2,13 +2,23 @@ package com.first_teck.locationmarkerv2drawer;
 
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +40,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -37,10 +48,21 @@ import java.util.Date;
  */
     public class MyMapFragment extends android.support.v4.app.Fragment {
 
-    private  GoogleMap myGoogleMap;
+    final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
+    public GoogleMap getMyGoogleMap() {
+        return myGoogleMap;
+    }
+
+    public void setMyGoogleMap(GoogleMap myGoogleMap) {
+        this.myGoogleMap = myGoogleMap;
+    }
+
+    private  GoogleMap myGoogleMap;
     private MyDatabaseHelper myDatabaseHelperM;
-;
+
+    private LocationManager locationManager;
+    private String provider;
 
 
     public MyMapFragment() {
@@ -61,6 +83,74 @@ import java.util.Date;
         if(getArguments() != null){
             myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(getArguments().getDouble("lat"),getArguments().getDouble("lng")), 15));
         }
+        else{
+//            int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
+//                    Manifest.permission.ACCESS_FINE_LOCATION);
+//            Log.d("From MyMapFragment", "permissionCheck equals " + permissionCheck);//-1代表denied，0代表granted
+//
+//            int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9;
+//            ActivityCompat.requestPermissions(getActivity(),
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},//Manifest.permission.ACCESS_FINE_LOCATION或者"android.permission.ACCESS_FINE_LOCATION"
+//                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+            // Here, thisActivity is the current activity
+            Log.d("From MyMapFragment", "permissionCheck equals " + ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION));//-1代表denied，0代表granted
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    Log.d("From MyMapFragment", " if execute" );
+
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    //貌似不需要
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage("You need to allow access to GPS to access your location")
+                            .setPositiveButton("OK",  new DialogInterface.OnClickListener(){
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(getActivity(),
+                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                            MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                                }
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .create()
+                            .show();
+
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+
+                    Log.d("From MyMapFragment", " else execute" );
+
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+
+            }
+
+            int[] grantResults = {ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)};
+            //getActivity().onRequestPermissionsResult(MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, grantResults);
+            onRequestPermissionsResult(MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, grantResults);
+
+
+
+
+
+        }
 
 
         setOnMapLongClickListener();
@@ -80,8 +170,8 @@ import java.util.Date;
                     do {
                         if (cursor.getDouble(cursor.getColumnIndex("lat")) == marker.getPosition().latitude
                                 && cursor.getDouble(cursor.getColumnIndex("lng")) == marker.getPosition().longitude) {
-                             locationName = cursor.getString(cursor.getColumnIndex("locationName"));
-                             description = cursor.getString((cursor.getColumnIndex("description")));
+                            locationName = cursor.getString(cursor.getColumnIndex("locationName"));
+                            description = cursor.getString((cursor.getColumnIndex("description")));
 
                             break;
                         }
@@ -223,7 +313,7 @@ import java.util.Date;
                         Toast.makeText(getActivity(), " Location name: " + editTextLocationName.getText().toString()
                                 + " Categories: " + radioButtonCategories.getText().toString()
                                 + " Descriptions: " + editTextDescriptions.getText().toString()
-                                + "savedDate" + System.currentTimeMillis() , Toast.LENGTH_LONG).show();
+                                + "savedDate" + System.currentTimeMillis(), Toast.LENGTH_LONG).show();
 
                         myGoogleMap.addMarker(new MarkerOptions().position(latLng));
 
@@ -247,6 +337,49 @@ import java.util.Date;
         });
     }
 
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        Log.d("MyMapFragment", "onRequestPermissionsResult executed");
+        switch (1) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationManager = (LocationManager) getActivity().getSystemService(Context.
+                            LOCATION_SERVICE);
+                    Log.d("MyMapFragment","locationManager initiated");
+// 获取所有可用的位置提供器
+                    List<String> providerList = locationManager.getProviders(true);
+                    if (providerList.contains(LocationManager.GPS_PROVIDER)) {
+                        provider = LocationManager.GPS_PROVIDER;
+                    } else if (providerList.contains(LocationManager.NETWORK_PROVIDER)) {
+                        provider = LocationManager.NETWORK_PROVIDER;
+                    } else {
+// 当没有可用的位置提供器时，弹出Toast提示用户
+                        Toast.makeText(getActivity(), "No location provider to use",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    Location location = locationManager.getLastKnownLocation(provider);
+                    if (location != null) {
+                        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+                    }
+//                    locationManager.requestLocationUpdates(provider, 5000, 1,
+//                            locationListener);
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
 
 
 
