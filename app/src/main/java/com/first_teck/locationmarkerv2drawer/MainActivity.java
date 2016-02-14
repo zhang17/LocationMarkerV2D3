@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.LogRecord;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,23 +43,50 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private String provider;
 
+
+
+    public static final  int DRAWER_SET_UP =  1;
+
+    private Handler handler = new Handler() {
+
+        public void handleMessage(Message message){
+            switch (message.what){
+                case DRAWER_SET_UP:
+                    drawerSetUp();
+                    break;
+                default:
+                    break;
+
+            }
+        }
+
+
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        drawerSetUp();
+        new Thread(){
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = DRAWER_SET_UP;
+                handler.sendMessage(message);
+            }
+        }.start();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
 
-        ///////////////////////////////////
+
         myDatabaseHelper = new MyDatabaseHelper(this, "Location.db", null, 1);
         android.support.v4.app.Fragment newFragment = null;
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         newFragment = new ListFragment();
         fragmentTransaction.replace(R.id.content_frame, newFragment);
-        //transaction.addToBackStack(null);
+        //fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
     }
@@ -122,37 +152,37 @@ public class MainActivity extends AppCompatActivity {
 
                     case 1:newFragment = new ListFragment();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
-                            //transaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                             break;
                     case 2:newFragment = new MyMapFragment();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
-                            //transaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                             break;
 
                     case 4:
                         newFragment = new ListFragmentShopping();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
-                        //transaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case 5:
                         newFragment = new ListFragmentEating();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
-                        //transaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case 6:
                         newFragment = new ListFragmentLiving();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
-                        //transaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     case 7:
                         newFragment = new ListFragmentEntertaining();
                         fragmentTransaction.replace(R.id.content_frame, newFragment);
-                        //transaction.addToBackStack(null);
+                        //fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         break;
                     default:
